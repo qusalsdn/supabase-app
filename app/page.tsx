@@ -46,7 +46,7 @@ export default function Home() {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Label htmlFor="todo" className="mb-2">
-              Please write down what to do.
+              Please create a to-do list.
             </Label>
             <div className="flex items-center">
               <Input type="text" id="todo" {...register("todo", { required: true })} />
