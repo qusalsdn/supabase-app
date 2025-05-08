@@ -3,10 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { supabase } from "@/lib/supabaseClient";
-import { useEffect, useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 interface Form {
   todo: string;
@@ -21,18 +21,17 @@ interface Todos {
 }
 
 export default function Home() {
+  const router = useRouter();
   const { handleSubmit, register } = useForm<Form>();
-  const [data, setData] = useState<Todos[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase.from("todos").select();
-      if (error) console.error(error);
-      else setData(data);
-    };
-
-    fetchData();
-  }, []);
+  const onClickLogoutBtn = async () => {
+    axios.post("/api/auth/logout").then((res) => {
+      if (res.data.success) {
+        toast.success("로그아웃되었습니다.");
+        router.replace("/login");
+      } else toast.error(res.data.message);
+    });
+  };
 
   const onSubmit = (data: Form) => {
     console.log(data);
@@ -41,24 +40,27 @@ export default function Home() {
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <Card className="w-96">
-        <CardHeader>Todo List</CardHeader>
+        <CardHeader className="flex items-center justify-between">
+          <p>Todo List</p>
+          <Button type="button" variant={"destructive"} size={"sm"} onClick={onClickLogoutBtn}>
+            로그아웃
+          </Button>
+        </CardHeader>
 
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Label htmlFor="todo" className="mb-2">
-              Please create a to-do list.
-            </Label>
             <div className="flex items-center">
-              <Input type="text" id="todo" {...register("todo", { required: true })} />
+              <Input
+                type="text"
+                id="todo"
+                placeholder="오늘의 할 일을 작성해 주세요..!"
+                {...register("todo", { required: true })}
+              />
               <Button type="submit" className="ml-3">
-                Submit!
+                추가
               </Button>
             </div>
           </form>
-
-          {data.map((item) => (
-            <p key={item.id}>{item.content}</p>
-          ))}
         </CardContent>
       </Card>
     </div>

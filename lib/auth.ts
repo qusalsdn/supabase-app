@@ -8,7 +8,7 @@ export const signJwt = (payload: object) => {
 
 export const verifyJwt = (token: string) => {
   try {
-    if (SECRET_KEY) return jwt.verify(token, SECRET_KEY);
+    return jwt.verify(token, SECRET_KEY);
   } catch {
     return null;
   }
