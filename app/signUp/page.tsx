@@ -32,7 +32,7 @@ export default function SignUp() {
   const onSubmit = (data: SignUpForm) => {
     data.password = bcrypt.hashSync(data.password, 10);
     axios
-      .post("/api/signUp", data)
+      .post("/api/auth/signUp", data)
       .then((res) => (res.data.success ? toast.success("회원가입에 성공하였습니다.") : toast.error(res.data.message)))
       .catch((err) => console.error(err));
   };

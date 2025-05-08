@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserLock } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const loginSchema = z.object({
   email: z.string().email("유요한 이메일 형식이 아닙니다."),
@@ -19,6 +22,7 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 export default function Login() {
+  const { replace } = useRouter();
   const {
     handleSubmit,
     register,
@@ -26,7 +30,15 @@ export default function Login() {
   } = useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
 
   const onSubmit = (data: LoginForm) => {
-    console.log(data);
+    axios
+      .post("/api/auth/login", data)
+      .then((res) => {
+        if (res.data.success) {
+          toast.success("로그인에 성공하였습니다.");
+          replace("/");
+        } else toast.error("아이디 혹은 비밀번호가 일치하지 않습니다.");
+      })
+      .catch((err) => console.error(err));
   };
 
   return (
