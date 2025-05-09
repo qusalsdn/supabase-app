@@ -45,7 +45,7 @@ export default function Home() {
           router.replace("/login");
         } else if (err.status === 500) toast.error("서버에 오류가 발생했습니다...ㅠ");
       });
-  const { data, mutate } = useSWR<Todos[]>("/api/todos/read", fetcher);
+  const { data, isLoading, mutate } = useSWR<Todos[]>("/api/todos/read", fetcher);
 
   const onClickLogoutBtn = async () => {
     axios.post("/api/auth/logout").then((res) => {
@@ -95,10 +95,18 @@ export default function Home() {
             </div>
           </form>
 
-          <div>
-            {data?.map((item) => (
-              <p key={item.id}>{item.content}</p>
-            ))}
+          <div className="mt-5">
+            {isLoading ? (
+              <div role="status" className="max-w-sm animate-pulse">
+                <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
+                <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+                <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
+                <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
+                <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
+              </div>
+            ) : (
+              data?.map((item) => <p key={item.id}>{item.content}</p>)
+            )}
           </div>
         </CardContent>
       </Card>
