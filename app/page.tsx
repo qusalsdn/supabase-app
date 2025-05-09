@@ -3,14 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-
-interface Form {
-  todo: string;
-}
+import useSWR from "swr";
+import { z } from "zod";
 
 interface Todos {
   id: number;
@@ -20,9 +19,33 @@ interface Todos {
   updated_at: Date;
 }
 
+const todoSchema = z.object({
+  todo: z.string().min(3, "최소 3자는 입력해주세요..!"),
+});
+
+type TodoForm = z.infer<typeof todoSchema>;
+
 export default function Home() {
   const router = useRouter();
-  const { handleSubmit, register } = useForm<Form>();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<TodoForm>({ resolver: zodResolver(todoSchema) });
+
+  const fetcher = (url: string) =>
+    axios
+      .get(url)
+      .then((res) => {
+        return res.data.data;
+      })
+      .catch((err) => {
+        if (err.status === 401) {
+          toast.error("유저 정보가 존재하지 않습니다.");
+          router.replace("/login");
+        } else if (err.status === 500) toast.error("서버에 오류가 발생했습니다...ㅠ");
+      });
+  const { data, mutate } = useSWR<Todos[]>("/api/todos/read", fetcher);
 
   const onClickLogoutBtn = async () => {
     axios.post("/api/auth/logout").then((res) => {
@@ -33,8 +56,19 @@ export default function Home() {
     });
   };
 
-  const onSubmit = (data: Form) => {
-    console.log(data);
+  const onSubmit = (data: TodoForm) => {
+    axios
+      .post("/api/todos/create", data)
+      .then((res) => {
+        toast.success(res.data.message);
+        mutate();
+      })
+      .catch((err) => {
+        if (err.status === 401) {
+          toast.error("유저 정보가 존재하지 않습니다.");
+          router.replace("/login");
+        } else if (err.status === 500) toast.error("서버에 오류가 발생했습니다...ㅠ");
+      });
   };
 
   return (
@@ -49,18 +83,23 @@ export default function Home() {
 
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex items-center">
-              <Input
-                type="text"
-                id="todo"
-                placeholder="오늘의 할 일을 작성해 주세요..!"
-                {...register("todo", { required: true })}
-              />
+            <div className="flex items-end">
+              <div className="w-full">
+                {errors.todo && <p className="text-sm text-red-500 mb-1">{errors.todo.message}</p>}
+                <Input type="text" placeholder="오늘의 할 일을 작성해 주세요..!" {...register("todo", { required: true })} />
+              </div>
+
               <Button type="submit" className="ml-3">
                 추가
               </Button>
             </div>
           </form>
+
+          <div>
+            {data?.map((item) => (
+              <p key={item.id}>{item.content}</p>
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>
