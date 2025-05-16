@@ -15,7 +15,7 @@ export default function Todo({ todo }: { todo: Todos }) {
   const [update, setUpdate] = useState(false);
 
   return (
-    <div className="border p-3 rounded-full shadow-md flex items-center justify-between">
+    <div className="border px-5 py-3 rounded-full shadow-md flex items-center justify-between">
       {update ? <Input className="max-w-60 border-2" {...register("content")} /> : <p>{todo.content}</p>}
 
       <div>

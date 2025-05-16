@@ -75,42 +75,53 @@ export default function Home() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-5">
-        <p className="text-2xl">All Tasks</p>
-        <Button type="button" variant={"destructive"} size={"sm"} onClick={onClickLogoutBtn}>
-          Log out
-        </Button>
-      </div>
-
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex items-end">
-          <div className="w-full">
-            {errors.todo && <p className="text-sm text-red-500 mb-1">{errors.todo.message}</p>}
-            <Input type="text" placeholder="Please fill the job." {...register("todo", { required: true })} />
-          </div>
-
-          <Button type="submit" className="ml-3">
-            Writing
+      <div className="sm:hidden">
+        <div className="flex items-center justify-between mb-5">
+          <p className="text-2xl">All Tasks</p>
+          <Button type="button" variant={"destructive"} size={"sm"} onClick={onClickLogoutBtn}>
+            Log out
           </Button>
         </div>
-      </form>
 
-      <div className="mt-5">
-        {isLoading ? (
-          <div role="status" className="max-w-sm animate-pulse">
-            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
-            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-72 mb-2.5"></div>
-            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-64 mb-2.5"></div>
-            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-80 mb-2.5"></div>
-            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-52"></div>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex items-end">
+            <div className="w-full">
+              {errors.todo && <p className="text-sm text-red-500 mb-1">{errors.todo.message}</p>}
+              <Input
+                type="text"
+                placeholder="Please fill the job."
+                className="rounded-full text-sm"
+                {...register("todo", { required: true })}
+              />
+            </div>
+
+            <Button type="submit" className="ml-3">
+              Writing
+            </Button>
           </div>
-        ) : (
-          <div className="space-y-3">
-            {data?.map((item) => (
-              <Todo key={item.id} todo={item} />
-            ))}
-          </div>
-        )}
+        </form>
+
+        <div className="mt-5">
+          {isLoading ? (
+            <div role="status" className="max-w-sm animate-pulse">
+              <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
+              <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-72 mb-2.5"></div>
+              <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-64 mb-2.5"></div>
+              <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-80 mb-2.5"></div>
+              <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-52"></div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {data?.map((item) => (
+                <Todo key={item.id} todo={item} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="w-screen h-screen items-center justify-center hidden sm:flex">
+        <p className="text-3xl">The screen size is too big 😢</p>
       </div>
     </div>
   );
