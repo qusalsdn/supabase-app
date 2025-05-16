@@ -18,15 +18,16 @@ export default function Todo({ todo, mutate }: { todo: Todos; mutate: KeyedMutat
   const router = useRouter();
   const { register, getValues, setValue } = useForm<Form>();
   const [update, setUpdate] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onClickUpdateBtn = () => {
     const content = getValues("content");
 
     if (content.length < 3) return toast.error("최소 3자는 입력해주세요..!");
 
-    setUpdate(!update);
-
     if (content !== todo.content) {
+      setLoading(true);
+
       axios
         .post("/api/todos/update", { id: todo.id, content })
         .then((res) => {
@@ -38,32 +39,39 @@ export default function Todo({ todo, mutate }: { todo: Todos; mutate: KeyedMutat
             toast.error("유저 정보가 존재하지 않습니다.");
             router.replace("/login");
           } else if (err.status === 500) toast.error("서버에 오류가 발생했습니다...ㅠ");
-        });
+        })
+        .finally(() => setLoading(false));
     }
+
+    setUpdate(!update);
   };
 
-  return (
-    <div className="border px-5 py-3 rounded-full shadow-md flex items-center justify-between">
-      {update ? <Input className="max-w-60 rounded-full text-sm" {...register("content")} /> : <p>{todo.content}</p>}
+  return !loading ? (
+    <div className="border px-5 py-3 rounded-full shadow-md">
+      <div className="flex items-center justify-between">
+        {update ? <Input className="max-w-60 rounded-full text-sm" {...register("content")} /> : <p>{todo.content}</p>}
 
-      <div>
-        {!update ? (
-          <Button
-            type="button"
-            variant={"ghost"}
-            onClick={() => {
-              setUpdate(!update);
-              setValue("content", todo.content);
-            }}
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </Button>
-        ) : (
-          <Button type="submit" variant={"ghost"} onClick={onClickUpdateBtn}>
-            수정
-          </Button>
-        )}
+        <div>
+          {!update ? (
+            <Button
+              type="button"
+              variant={"ghost"}
+              onClick={() => {
+                setUpdate(!update);
+                setValue("content", todo.content);
+              }}
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+            </Button>
+          ) : (
+            <Button type="submit" variant={"ghost"} onClick={onClickUpdateBtn}>
+              수정
+            </Button>
+          )}
+        </div>
       </div>
     </div>
+  ) : (
+    <div className="h-14 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5 animate-pulse"></div>
   );
 }
