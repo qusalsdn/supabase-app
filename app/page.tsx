@@ -10,8 +10,9 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import useSWR from "swr";
 import { z } from "zod";
+import Todo from "./components/todo";
 
-interface Todos {
+export interface Todos {
   id: number;
   user_id: number;
   content: string;
@@ -30,8 +31,9 @@ export default function Home() {
   const {
     handleSubmit,
     register,
+    reset,
     formState: { errors },
-  } = useForm<TodoForm>({ resolver: zodResolver(todoSchema) });
+  } = useForm<TodoForm>({ defaultValues: { todo: "" }, resolver: zodResolver(todoSchema) });
 
   const fetcher = (url: string) =>
     axios
@@ -61,6 +63,7 @@ export default function Home() {
       .post("/api/todos/create", data)
       .then((res) => {
         toast.success(res.data.message);
+        reset();
         mutate();
       })
       .catch((err) => {
@@ -105,7 +108,11 @@ export default function Home() {
                 <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-52"></div>
               </div>
             ) : (
-              data?.map((item) => <p key={item.id}>{item.content}</p>)
+              <div className="space-y-3">
+                {data?.map((item) => (
+                  <Todo key={item.id} todo={item} />
+                ))}
+              </div>
             )}
           </div>
         </CardContent>

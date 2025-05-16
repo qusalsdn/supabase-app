@@ -6,11 +6,18 @@ export async function GET() {
 
   if (!user) return Response.json({}, { status: 401 });
 
+  const today = new Date().toISOString().split("T")[0];
+
   try {
     const {
       data: [{ user_id }],
     }: any = await supabase.from("user").select("user_id").eq("name", user?.name);
-    const { data } = await supabase.from("todos").select("*").eq("user_id", user_id);
+    const { data } = await supabase
+      .from("todos")
+      .select("*")
+      .eq("user_id", user_id)
+      .filter("created_at", "gte", `${today}T00:00:00`)
+      .filter("updated_at", "lt", `${today}T23:59:59.999`);
     return Response.json({ data });
   } catch (error) {
     console.error(error);
