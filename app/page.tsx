@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -75,48 +74,44 @@ export default function Home() {
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
-      <Card className="w-96">
-        <CardHeader className="flex items-center justify-between">
-          <p>Todo List</p>
-          <Button type="button" variant={"destructive"} size={"sm"} onClick={onClickLogoutBtn}>
-            로그아웃
-          </Button>
-        </CardHeader>
+    <div>
+      <div className="flex items-center justify-between mb-5">
+        <p className="text-2xl">All Tasks</p>
+        <Button type="button" variant={"destructive"} size={"sm"} onClick={onClickLogoutBtn}>
+          Log out
+        </Button>
+      </div>
 
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex items-end">
-              <div className="w-full">
-                {errors.todo && <p className="text-sm text-red-500 mb-1">{errors.todo.message}</p>}
-                <Input type="text" placeholder="오늘의 할 일을 작성해 주세요..!" {...register("todo", { required: true })} />
-              </div>
-
-              <Button type="submit" className="ml-3">
-                추가
-              </Button>
-            </div>
-          </form>
-
-          <div className="mt-5">
-            {isLoading ? (
-              <div role="status" className="max-w-sm animate-pulse">
-                <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
-                <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-72 mb-2.5"></div>
-                <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-64 mb-2.5"></div>
-                <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-80 mb-2.5"></div>
-                <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-52"></div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {data?.map((item) => (
-                  <Todo key={item.id} todo={item} />
-                ))}
-              </div>
-            )}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex items-end">
+          <div className="w-full">
+            {errors.todo && <p className="text-sm text-red-500 mb-1">{errors.todo.message}</p>}
+            <Input type="text" placeholder="Please fill the job." {...register("todo", { required: true })} />
           </div>
-        </CardContent>
-      </Card>
+
+          <Button type="submit" className="ml-3">
+            Writing
+          </Button>
+        </div>
+      </form>
+
+      <div className="mt-5">
+        {isLoading ? (
+          <div role="status" className="max-w-sm animate-pulse">
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-72 mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-64 mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-80 mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-52"></div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {data?.map((item) => (
+              <Todo key={item.id} todo={item} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
