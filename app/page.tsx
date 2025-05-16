@@ -79,7 +79,7 @@ export default function Home() {
         <div className="flex items-center justify-between mb-5">
           <p className="text-2xl">All Tasks</p>
           <Button type="button" variant={"destructive"} size={"sm"} onClick={onClickLogoutBtn}>
-            Log out
+            로그아웃
           </Button>
         </div>
 
@@ -89,14 +89,14 @@ export default function Home() {
               {errors.todo && <p className="text-sm text-red-500 mb-1">{errors.todo.message}</p>}
               <Input
                 type="text"
-                placeholder="Please fill the job."
+                placeholder="오늘 할 일을 작성해주세요..!"
                 className="rounded-full text-sm"
                 {...register("todo", { required: true })}
               />
             </div>
 
             <Button type="submit" className="ml-3">
-              Writing
+              작성
             </Button>
           </div>
         </form>
@@ -113,7 +113,7 @@ export default function Home() {
           ) : (
             <div className="space-y-3">
               {data?.map((item) => (
-                <Todo key={item.id} todo={item} />
+                <Todo key={item.id} todo={item} mutate={mutate} />
               ))}
             </div>
           )}
@@ -121,7 +121,7 @@ export default function Home() {
       </div>
 
       <div className="w-screen h-screen items-center justify-center hidden sm:flex">
-        <p className="text-3xl">The screen size is too big 😢</p>
+        <p className="text-3xl">화면 크기가 너무 큽니다...😢</p>
       </div>
     </div>
   );

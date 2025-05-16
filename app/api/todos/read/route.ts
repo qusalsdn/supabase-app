@@ -17,7 +17,8 @@ export async function GET() {
       .select("*")
       .eq("user_id", user_id)
       .filter("created_at", "gte", `${today}T00:00:00`)
-      .filter("updated_at", "lt", `${today}T23:59:59.999`);
+      .filter("updated_at", "lt", `${today}T23:59:59.999`)
+      .order("created_at", { ascending: false });
     return Response.json({ data });
   } catch (error) {
     console.error(error);
