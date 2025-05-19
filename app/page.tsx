@@ -74,7 +74,7 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <>
       <div className="sm:hidden">
         <div className="flex items-center justify-between mb-5">
           <p className="text-2xl">All Tasks</p>
@@ -123,6 +123,6 @@ export default function Home() {
       <div className="w-screen h-screen items-center justify-center hidden sm:flex">
         <p className="text-3xl">화면 크기가 너무 큽니다...😢</p>
       </div>
-    </div>
+    </>
   );
 }

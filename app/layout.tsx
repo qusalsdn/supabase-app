@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="px-3 py-5">
+      <body className="px-3 py-5 w-screen h-screen">
         {children}
         <Toaster />
       </body>

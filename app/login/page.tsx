@@ -8,7 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserLock } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -42,12 +42,12 @@ export default function Login() {
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
+    <div className="w-full h-full flex items-center justify-center">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardHeader className="flex flex-col items-center">
-            <FontAwesomeIcon icon={faUserLock} size="3x" className="text-zinc-800" />
-            <p>
+            <FontAwesomeIcon icon={faArrowRightToBracket} size="3x" className="text-zinc-700" />
+            <p className="text-sm">
               계정이 없으신가요?{" "}
               <Link href={"/signUp"} className="text-blue-500">
                 회원가입
