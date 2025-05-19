@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Todos } from "../page";
 import { Input } from "@/components/ui/input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -46,6 +46,21 @@ export default function Todo({ todo, mutate }: { todo: Todos; mutate: KeyedMutat
     setUpdate(!update);
   };
 
+  const onClickDeleteBtn = (id: number) => {
+    axios
+      .post("/api/todos/delete", { id })
+      .then((res) => {
+        toast.success(res.data.message);
+        mutate();
+      })
+      .catch((err) => {
+        if (err.status === 401) {
+          toast.error("유저 정보가 존재하지 않습니다.");
+          router.replace("/login");
+        } else if (err.status === 500) toast.error("서버에 오류가 발생했습니다...ㅠ");
+      });
+  };
+
   return !loading ? (
     <div className="border px-5 py-3 rounded-full shadow-md">
       <div className="flex items-center justify-between">
@@ -68,6 +83,10 @@ export default function Todo({ todo, mutate }: { todo: Todos; mutate: KeyedMutat
               수정
             </Button>
           )}
+
+          <Button type="button" variant={"ghost"} onClick={() => onClickDeleteBtn(todo.id)}>
+            <FontAwesomeIcon icon={faTrashCan} />
+          </Button>
         </div>
       </div>
     </div>
