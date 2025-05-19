@@ -18,8 +18,12 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="px-3 py-5 w-screen h-screen">
-        {children}
+        <div className="w-full h-full">{children}</div>
         <Toaster />
+
+        <div className="w-screen h-screen items-center justify-center hidden sm:flex">
+          <p className="text-3xl">화면 크기가 너무 큽니다...😢</p>
+        </div>
       </body>
     </html>
   );

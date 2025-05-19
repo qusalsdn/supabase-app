@@ -38,12 +38,12 @@ export default function SignUp() {
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
+    <div className="w-full h-full flex items-center justify-center">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardHeader className="flex flex-col items-center">
-            <FontAwesomeIcon icon={faUserPlus} size="3x" />
-            <p>
+            <FontAwesomeIcon icon={faUserPlus} size="3x" className="text-zinc-700" />
+            <p className="text-sm">
               계정이 있으신가요?{" "}
               <Link href={"/login"} className="text-blue-500">
                 로그인

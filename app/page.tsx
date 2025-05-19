@@ -74,55 +74,49 @@ export default function Home() {
   };
 
   return (
-    <>
-      <div className="sm:hidden">
-        <div className="flex items-center justify-between mb-5">
-          <p className="text-2xl">All Tasks</p>
-          <Button type="button" variant={"destructive"} size={"sm"} onClick={onClickLogoutBtn}>
-            로그아웃
+    <div>
+      <div className="flex items-center justify-between mb-5">
+        <p className="text-2xl">All Tasks</p>
+        <Button type="button" variant={"destructive"} size={"sm"} onClick={onClickLogoutBtn}>
+          로그아웃
+        </Button>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex items-end">
+          <div className="w-full">
+            {errors.todo && <p className="text-sm text-red-500 mb-1">{errors.todo.message}</p>}
+            <Input
+              type="text"
+              placeholder="오늘 할 일을 작성해주세요..!"
+              className="rounded-full text-sm"
+              {...register("todo", { required: true })}
+            />
+          </div>
+
+          <Button type="submit" className="ml-3">
+            작성
           </Button>
         </div>
+      </form>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex items-end">
-            <div className="w-full">
-              {errors.todo && <p className="text-sm text-red-500 mb-1">{errors.todo.message}</p>}
-              <Input
-                type="text"
-                placeholder="오늘 할 일을 작성해주세요..!"
-                className="rounded-full text-sm"
-                {...register("todo", { required: true })}
-              />
-            </div>
-
-            <Button type="submit" className="ml-3">
-              작성
-            </Button>
+      <div className="mt-5">
+        {isLoading ? (
+          <div role="status" className="max-w-sm animate-pulse">
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-72 mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-64 mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-80 mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-52"></div>
           </div>
-        </form>
-
-        <div className="mt-5">
-          {isLoading ? (
-            <div role="status" className="max-w-sm animate-pulse">
-              <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
-              <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-72 mb-2.5"></div>
-              <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-64 mb-2.5"></div>
-              <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-80 mb-2.5"></div>
-              <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-52"></div>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {data?.map((item) => (
-                <Todo key={item.id} todo={item} mutate={mutate} />
-              ))}
-            </div>
-          )}
-        </div>
+        ) : (
+          <div className="space-y-3">
+            {data?.map((item) => (
+              <Todo key={item.id} todo={item} mutate={mutate} />
+            ))}
+          </div>
+        )}
       </div>
-
-      <div className="w-screen h-screen items-center justify-center hidden sm:flex">
-        <p className="text-3xl">화면 크기가 너무 큽니다...😢</p>
-      </div>
-    </>
+    </div>
   );
 }
