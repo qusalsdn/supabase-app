@@ -47,6 +47,8 @@ export default function Todo({ todo, mutate }: { todo: Todos; mutate: KeyedMutat
   };
 
   const onClickDeleteBtn = (id: number) => {
+    setLoading(true);
+
     axios
       .post("/api/todos/delete", { id })
       .then((res) => {
@@ -58,7 +60,8 @@ export default function Todo({ todo, mutate }: { todo: Todos; mutate: KeyedMutat
           toast.error("유저 정보가 존재하지 않습니다.");
           router.replace("/login");
         } else if (err.status === 500) toast.error("서버에 오류가 발생했습니다...ㅠ");
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   return !loading ? (
