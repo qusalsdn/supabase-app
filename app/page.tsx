@@ -74,7 +74,7 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <>
       <div className="flex items-center justify-between mb-5">
         <p className="text-2xl">All Tasks</p>
         <Button type="button" variant={"destructive"} size={"sm"} onClick={onClickLogoutBtn}>
@@ -117,6 +117,6 @@ export default function Home() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }
