@@ -13,6 +13,8 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const signUpSchema = z.object({
   email: z.string().email("유효한 이메일 형식이 아닙니다."),
@@ -23,18 +25,27 @@ const signUpSchema = z.object({
 type SignUpForm = z.infer<typeof signUpSchema>;
 
 export default function SignUp() {
+  const router = useRouter();
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm<SignUpForm>({ resolver: zodResolver(signUpSchema) });
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = (data: SignUpForm) => {
+    setLoading(true);
     data.password = bcrypt.hashSync(data.password, 10);
     axios
       .post("/api/auth/signUp", data)
-      .then((res) => (res.data.success ? toast.success("회원가입에 성공하였습니다.") : toast.error(res.data.message)))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        if (res.data.success) {
+          toast.success("회원가입에 성공하였습니다.");
+          router.replace("/login");
+        } else toast.error(res.data.message);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -70,8 +81,8 @@ export default function SignUp() {
               {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
             </div>
 
-            <Button type="submit" className="w-full">
-              회원가입
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "회원가입중..." : "회원가입"}
             </Button>
           </CardContent>
         </Card>
