@@ -13,6 +13,7 @@ import Link from "next/link";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const loginSchema = z.object({
   email: z.string().email("유요한 이메일 형식이 아닙니다."),
@@ -28,8 +29,10 @@ export default function Login() {
     register,
     formState: { errors },
   } = useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = (data: LoginForm) => {
+    setLoading(true);
     axios
       .post("/api/auth/login", data)
       .then((res) => {
@@ -38,7 +41,8 @@ export default function Login() {
           replace("/");
         } else toast.error("아이디 혹은 비밀번호가 일치하지 않습니다.");
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -68,7 +72,9 @@ export default function Login() {
               {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
             </div>
 
-            <Button className="w-full">로그인</Button>
+            <Button className="w-full" disabled={loading}>
+              {loading ? "로그인 중..." : "로그인"}
+            </Button>
           </CardContent>
         </Card>
       </form>
