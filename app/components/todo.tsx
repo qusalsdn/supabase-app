@@ -9,6 +9,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { KeyedMutator } from "swr";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Form {
   content: string;
@@ -64,10 +65,28 @@ export default function Todo({ todo, mutate }: { todo: Todos; mutate: KeyedMutat
       .finally(() => setLoading(false));
   };
 
+  const onCheckedChangeCompletion = (checked: boolean) => {
+    axios
+      .post("/api/todos/completion", { id: todo.id, completion: checked })
+      .then((res) => {
+        if (checked) toast.success(res.data.message);
+        mutate();
+      })
+      .catch((err) => {
+        if (err.status === 401) {
+          toast.error("유저 정보가 존재하지 않습니다.");
+          router.replace("/login");
+        } else if (err.status === 500) toast.error("서버에 오류가 발생했습니다...ㅠ");
+      });
+  };
+
   return !loading ? (
     <div className="border px-5 py-3 rounded-full shadow-md">
       <div className="flex items-center justify-between">
-        {update ? <Input className="max-w-60 rounded-full text-sm" {...register("content")} /> : <p>{todo.content}</p>}
+        <div className="flex items-center space-x-2">
+          <Checkbox checked={todo.completion} onCheckedChange={onCheckedChangeCompletion} />
+          {update ? <Input className="max-w-60 rounded-full text-sm" {...register("content")} /> : <p>{todo.content}</p>}
+        </div>
 
         <div>
           {!update ? (

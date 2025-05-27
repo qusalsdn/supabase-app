@@ -15,6 +15,7 @@ export interface Todos {
   id: number;
   user_id: number;
   content: string;
+  completion: boolean;
   created_at: Date;
   updated_at: Date;
 }
