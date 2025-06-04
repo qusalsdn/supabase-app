@@ -81,11 +81,15 @@ export default function Todo({ todo, mutate }: { todo: Todos; mutate: KeyedMutat
   };
 
   return !loading ? (
-    <div className="border px-5 py-3 rounded-full shadow-md">
+    <div className={`border px-5 py-3 rounded-full shadow-md duration-500 ${todo.completion && "opacity-50 hover:opacity-100"}`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Checkbox checked={todo.completion} onCheckedChange={onCheckedChangeCompletion} />
-          {update ? <Input className="max-w-60 rounded-full text-sm" {...register("content")} /> : <p>{todo.content}</p>}
+          {update ? (
+            <Input className="max-w-60 rounded-full text-sm" {...register("content")} />
+          ) : (
+            <p className={`${todo.completion && "line-through"}`}>{todo.content}</p>
+          )}
         </div>
 
         <div>
